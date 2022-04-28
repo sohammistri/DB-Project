@@ -1,0 +1,25 @@
+{
+  "name": "db_proj",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@git.cse.iitb.ac.in:db-project/db-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^17.0.27"
+  },
+  "dependencies": {
+    "@influxdata/influxdb-client": "^1.25.0",
+    "@influxdata/influxdb-client-apis": "^1.25.0",
+    "dotenv": "^16.0.0"
+  }
+}
