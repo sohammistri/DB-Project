@@ -1,10 +1,14 @@
-import {config} from 'dotenv'
+const dotenv = require('dotenv')
 
-config()
+dotenv.config()
 
-export let influx = {
-    url: process.env.INFLUX_URL,
-    token: process.env.INFLUX_TOKEN,
-    org: process.env.INFLUX_ORG,
-    bucket: process.env.INFLUX_BUCKET
+module.exports = {
+    influx: {
+        url: process.env.INFLUX_URL,
+        token: process.env.INFLUX_TOKEN,
+        org: process.env.INFLUX_ORG,
+        bucket: process.env.INFLUX_BUCKET,
+        uname: process.env.INFLUX_UNAME,
+        passwd: process.env.INFLUX_PASSWD,
+    }
 }

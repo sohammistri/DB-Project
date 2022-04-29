@@ -30,7 +30,6 @@ function RenderResults({error, table}){
       }],
       valueFormatters: {
         _time: giraffe.timeFormatter({
-          timeZone: 'IST',
           format: 'YYYY-MM-DD HH:mm:ss ZZ',
         }),
       }
