@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Disk Capacity Monitoring</title>
+    <title>Disk IO Monitoring</title>
     <script>
       // required by react
       window.process = {
@@ -24,11 +24,23 @@
 
   <body>
 
-    <h1>Disk Capacity Monitoring</h1>
+    <h1>Disk I/O Monitoring</h1>
 
     <fieldset>
-      <legend>Used Disk Percentage</legend>
-      <div style="width: 100%;height: 200px; border: 1px solid grey; margin-bottom: 10px;" id="renderAreaCapacity">
+      <legend>Disk I/O Read Time</legend>
+      <div style="width: 100%;height: 200px; border: 1px solid grey; margin-bottom: 10px;" id="renderAreaRead">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Disk I/O Write Time</legend>
+      <div style="width: 100%;height: 200px; border: 1px solid grey; margin-bottom: 10px;" id="renderAreaWrite">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Disk I/O Operations in Progress</legend>
+      <div style="width: 100%;height: 200px; border: 1px solid grey; margin-bottom: 10px;" id="renderAreaOps">
       </div>
     </fieldset>
 
@@ -61,16 +73,38 @@
         const hostNameInput = document.getElementById('hostName')
         hostNameInput.value =  hostName
 
-        fluxQueryCapacity = `
-          from(bucket: "`+bucket+`")
-          |> range(start: ` + timeRangeStart + `)
-          |> filter(fn: (r) => r["host"] == "`+hostName+`")
-          |> filter(fn: (r) => r["_measurement"] == "disk")
-          |> filter(fn: (r) => r["_field"] == "used_percent")
-          |> filter(fn: (r) => r["device"] == "disk1s1")
-          |> drop(columns: ["host"])
-          |> aggregateWindow(every: ` + windowPeriod + `, fn: mean, createEmpty: false)
-          |> yield(name: "mean")
+
+        fluxQueryOps = `
+            from(bucket: "`+bucket+`")
+        |> range(start: ` + timeRangeStart + `)
+        |> filter(fn: (r) => r["host"] == "`+hostName+`")
+        |> filter(fn: (r) => r["_measurement"] == "diskio")
+        |> filter(fn: (r) => r["_field"] == "iops_in_progress")
+        |> drop(columns: ["host"])
+        |> aggregateWindow(every: ` + windowPeriod + `, fn: mean, createEmpty: false)
+        |> yield(name: "mean")
+        `
+
+        fluxQueryRead = `
+            from(bucket: "`+bucket+`")
+        |> range(start: ` + timeRangeStart + `)
+        |> filter(fn: (r) => r["host"] == "`+hostName+`")
+        |> filter(fn: (r) => r["_measurement"] == "diskio")
+        |> filter(fn: (r) => r["_field"] == "read_time")
+        |> drop(columns: ["host"])
+        |> aggregateWindow(every: ` + windowPeriod + `, fn: mean, createEmpty: false)
+        |> yield(name: "mean")
+        `
+
+        fluxQueryWrite = `
+            from(bucket: "`+bucket+`")
+        |> range(start: ` + timeRangeStart + `)
+        |> filter(fn: (r) => r["host"] == "`+hostName+`")
+        |> filter(fn: (r) => r["_measurement"] == "diskio")
+        |> filter(fn: (r) => r["_field"] == "write_time")
+        |> drop(columns: ["host"])
+        |> aggregateWindow(every: ` + windowPeriod + `, fn: mean, createEmpty: false)
+        |> yield(name: "mean")
         `
       }
 
@@ -81,11 +115,13 @@
       const influxDBClientGiraffe = window['@influxdata/influxdb-client-giraffe']
 
       function updateQueries() {
-        queryAndVisualize(fluxQueryCapacity, 'renderAreaCapacity')
+        queryAndVisualize(fluxQueryOps, 'renderAreaOps')
+        queryAndVisualize(fluxQueryRead, 'renderAreaRead')
+        queryAndVisualize(fluxQueryWrite, 'renderAreaWrite')
       }
 
       updateQueries()
-      setInterval(updateQueries, 10000);
+      setInterval(updateQueries, updatePeriod);
 
       document.getElementById('setHostName').addEventListener('click', () => {
         setQueries()
