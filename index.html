@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <title>Application Monitor System</title>
+    <script>
+      // required by react
+      window.process = {
+        env : 'development'
+      }
+      // required by giraffe
+      global = window
+    </script>
+
+    <script src="https://unpkg.com/react@17.0.0/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17.0.0/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@influxdata/giraffe@0.41.0/dist/index.js"></script>
+    <script src="https://unpkg.com/@influxdata/influxdb-client/dist/index.browser.js"></script>
+    <script src="https://unpkg.com/@influxdata/influxdb-client-giraffe/dist/index.js"></script>
+    <!-- <script src="../packages/giraffe/dist/index.js"></script> -->
+    <script src="./env_browser.js"></script>
+    <script src="./common.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css">
+    <link rel="stylesheet" href="./style.css">
+
+  </head>
+
+
+  <body>
+
+    <h1>Application Monitor System</h1>
+
+    <hr>
+
+    <h2>Process Monitoring</h2>
+
+    <a href="memory.html"> Memory Monitoring </a> <br>
+    <a href="disk_capacity.html"> Disk Capacity Monitoring </a> <br>
+    <a href="network_traffic.html"> Network Traffic Monitoring </a>
+
+    <hr>
+
+    <h2>Alert Handling</h2>
+
+    <a href="alert_creation.html"> Alert Creation </a> <br>
+    <a href="alert_updation.html"> Alert Updation </a>
+
+    <hr>
+
+    <p> CS 387 (Database and Information Systems Lab) Course Project</p>
+    <p>
+      Team Members:<br>
+      190050024 - Atin Bainada, 190050043 - Likhith,<br>
+      190050111 - Shabnam Sahay, 190050116 - Soham Mistri
+    </p>
+
+
+  </body>
+</html>
