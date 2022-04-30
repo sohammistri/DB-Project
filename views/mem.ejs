@@ -44,8 +44,21 @@
       </div>
     </fieldset>
 
-    <button id="setHostName" style="margin-bottom: 20px;">Enter</button>
+    <fieldset>
+      <legend>Start time</legend>
+      <div style="display:flex; margin-bottom: 10px;">
+        <textarea id="startTime" style="flex: 1" rows="2" placeholder="Enter start time... (eg. -5m, -1h etc)"></textarea>
+      </div>
+    </fieldset>
 
+    <fieldset>
+      <legend>End time</legend>
+      <div style="display:flex; margin-bottom: 10px;">
+        <textarea id="endTime" style="flex: 1" rows="2" placeholder="Enter end time... (eg. -5m, -1h etc)"></textarea>
+      </div>
+    </fieldset>
+
+    <button id="setHostName" style="margin-bottom: 20px;">Enter</button>
     <p style="text-align:right;">
       <a href="/">Home</a>
     </p>
@@ -64,14 +77,17 @@
 
       function setQueries() {
 
-        hostName = document.getElementById('hostName').value
+        const hostName = document.getElementById('hostName').value
+        const startTime = document.getElementById('startTime').value
+        const endTime = document.getElementById('endTime').value
+
         const hostNameInput = document.getElementById('hostName')
         hostNameInput.value =  hostName
 
 
         fluxQueryUsed = `
             from(bucket: "`+bucket+`")
-        |> range(start: ` + timeRangeStart + `)
+        |> range(start: ` + startTime + `, stop: `+endTime+`)
         |> filter(fn: (r) => r["host"] == "`+hostName+`")
         |> filter(fn: (r) => r["_measurement"] == "mem")
         |> filter(fn: (r) => r["_field"] == "used_percent")
@@ -82,7 +98,7 @@
 
         fluxQueryAvailable = `
             from(bucket: "`+bucket+`")
-        |> range(start: ` + timeRangeStart + `)
+        |> range(start: ` + startTime + `, stop: `+endTime+`)
         |> filter(fn: (r) => r["host"] == "`+hostName+`")
         |> filter(fn: (r) => r["_measurement"] == "mem")
         |> filter(fn: (r) => r["_field"] == "available_percent")

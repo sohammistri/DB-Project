@@ -57,6 +57,20 @@
       </div>
     </fieldset>
 
+    <fieldset>
+      <legend>Start time</legend>
+      <div style="display:flex; margin-bottom: 10px;">
+        <textarea id="startTime" style="flex: 1" rows="2" placeholder="Enter start time... (eg. -5m, -1h etc)"></textarea>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>End time</legend>
+      <div style="display:flex; margin-bottom: 10px;">
+        <textarea id="endTime" style="flex: 1" rows="2" placeholder="Enter end time... (eg. -5m, -1h etc)"></textarea>
+      </div>
+    </fieldset>
+
     <button id="setHostAndProc" style="margin-bottom: 20px;">Enter</button>
 
     <p style="text-align:right;">
@@ -77,7 +91,10 @@
 
       function setQueries() {
 
-        hostName = document.getElementById('hostName').value
+        const hostName = document.getElementById('hostName').value
+        const startTime = document.getElementById('startTime').value
+        const endTime = document.getElementById('endTime').value
+
         const hostNameInput = document.getElementById('hostName')
         hostNameInput.value =  hostName
 
@@ -88,7 +105,7 @@
 
         fluxQueryCPUUsage = `
             from(bucket: "`+bucket+`")
-        |> range(start: ` + timeRangeStart + `)
+        |> range(start: ` + startTime + `, stop: `+endTime+`)
         |> filter(fn: (r) => r["host"] == "`+hostName+`")
         |> filter(fn: (r) => r["process_name"] == "`+procName+`")
         |> filter(fn: (r) => r["_measurement"] == "procstat")
@@ -100,7 +117,7 @@
 
         fluxQueryMemUsage = `
             from(bucket: "`+bucket+`")
-        |> range(start: ` + timeRangeStart + `)
+        |> range(start: ` + startTime + `, stop: `+endTime+`)
         |> filter(fn: (r) => r["host"] == "`+hostName+`")
         |> filter(fn: (r) => r["process_name"] == "`+procName+`")
         |> filter(fn: (r) => r["_measurement"] == "procstat")
@@ -112,7 +129,7 @@
 
         fluxQueryNumThr = `
             from(bucket: "`+bucket+`")
-        |> range(start: ` + timeRangeStart + `)
+        |> range(start: ` + startTime + `, stop: `+endTime+`)
         |> filter(fn: (r) => r["host"] == "`+hostName+`")
         |> filter(fn: (r) => r["process_name"] == "`+procName+`")
         |> filter(fn: (r) => r["_measurement"] == "procstat")
