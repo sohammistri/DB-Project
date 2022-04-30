@@ -9,16 +9,15 @@
       // required by giraffe
       global = window
     </script>
-    <script src="https://unpkg.com/react@17.0.0/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@17.0.0/umd/react-dom.development.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@influxdata/giraffe@0.41.0/dist/index.js"></script>
-    <script src="https://unpkg.com/@influxdata/influxdb-client/dist/index.browser.js"></script>
-    <script src="https://unpkg.com/@influxdata/influxdb-client-giraffe/dist/index.js"></script>
+    <script crossorigin src="https://unpkg.com/react@17.0.0/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17.0.0/umd/react-dom.development.js"></script>
+    <script crossorigin src="https://cdn.jsdelivr.net/npm/@influxdata/giraffe@0.41.0/dist/index.js"></script>
+    <script crossorigin src="https://unpkg.com/@influxdata/influxdb-client/dist/index.browser.js"></script>
+    <script crossorigin src="https://unpkg.com/@influxdata/influxdb-client-giraffe/dist/index.js"></script>
     <!-- <script src="../packages/giraffe/dist/index.js"></script> -->
-    <script src="./env_browser.js"></script>
-    <script src="./common.js"></script>
+    <script src="/js/common.js"></script>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/dark.min.css">
   </head>
 
 
@@ -53,36 +52,54 @@
     <fieldset>
       <legend>Host Name</legend>
       <div style="display:flex; margin-bottom: 10px;">
-        <textarea id="hostName" style="flex: 1" rows="2"
-        >Shabnams-MacBook-Pro.local</textarea>
+        <textarea id="hostName" style="flex: 1" rows="2" placeholder="Enter host name..."></textarea>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Start time</legend>
+      <div style="display:flex; margin-bottom: 10px;">
+        <textarea id="startTime" style="flex: 1" rows="2" placeholder="Enter start time... (eg. -5m, -1h etc)"></textarea>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>End time</legend>
+      <div style="display:flex; margin-bottom: 10px;">
+        <textarea id="endTime" style="flex: 1" rows="2" placeholder="Enter end time... (eg. -5m, -1h etc)"></textarea>
       </div>
     </fieldset>
 
     <button id="setHostName" style="margin-bottom: 20px;">Enter</button>
-
     <p style="text-align:right;">
-      <a href="./index.html">Home</a>
+      <a href="/">Home</a>
     </p>
 
 
     <script>
 
       // create query API
-      const {url, token, org, bucket} = window.INFLUX_ENV // loaded in ./env_browser.js
+      const url = '<%- url %>'
+      const token = '<%- token %>'
+      const org = '<%- org %>'
+      const bucket = '<%- bucket %>'
       const influxDBClient = window['@influxdata/influxdb-client']
       const influxDB = new influxDBClient.InfluxDB({url, token})
       const queryApi = influxDB.getQueryApi(org)
 
       function setQueries() {
 
-        hostName = document.getElementById('hostName').value
+        const hostName = document.getElementById('hostName').value
+        const startTime = document.getElementById('startTime').value
+        const endTime = document.getElementById('endTime').value
+
         const hostNameInput = document.getElementById('hostName')
         hostNameInput.value =  hostName
 
 
         fluxQueryRun = `
             from(bucket: "`+bucket+`")
-        |> range(start: ` + timeRangeStart + `)
+        |> range(start: ` + startTime + `, stop: `+endTime+`)
         |> filter(fn: (r) => r["host"] == "`+hostName+`")
         |> filter(fn: (r) => r["_measurement"] == "processes")
         |> filter(fn: (r) => r["_field"] == "running")
@@ -93,7 +110,7 @@
 
         fluxQueryBlock = `
             from(bucket: "`+bucket+`")
-        |> range(start: ` + timeRangeStart + `)
+        |> range(start: ` + startTime + `, stop: `+endTime+`)
         |> filter(fn: (r) => r["host"] == "`+hostName+`")
         |> filter(fn: (r) => r["_measurement"] == "processes")
         |> filter(fn: (r) => r["_field"] == "blocked")
@@ -104,7 +121,7 @@
 
         fluxQuerySleep = `
             from(bucket: "`+bucket+`")
-        |> range(start: ` + timeRangeStart + `)
+        |> range(start: ` + startTime + `, stop: `+endTime+`)
         |> filter(fn: (r) => r["host"] == "`+hostName+`")
         |> filter(fn: (r) => r["_measurement"] == "processes")
         |> filter(fn: (r) => r["_field"] == "sleeping")
@@ -115,7 +132,7 @@
 
         fluxQueryTotal = `
             from(bucket: "`+bucket+`")
-        |> range(start: ` + timeRangeStart + `)
+        |> range(start: ` + startTime + `, stop: `+endTime+`)
         |> filter(fn: (r) => r["host"] == "`+hostName+`")
         |> filter(fn: (r) => r["_measurement"] == "processes")
         |> filter(fn: (r) => r["_field"] == "total")

@@ -1,25 +1,19 @@
 {
-  "name": "db_proj",
-  "version": "1.0.0",
-  "type": "module",
-  "description": "",
-  "main": "index.js",
+  "name": "app-monitor",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@git.cse.iitb.ac.in:db-project/db-project.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/node": "^17.0.27"
+    "start": "node ./bin/www"
   },
   "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "ejs": "~2.6.1",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1",
+    "@influxdata/giraffe": "^2.25.0",
     "@influxdata/influxdb-client": "^1.25.0",
-    "@influxdata/influxdb-client-apis": "^1.25.0",
     "dotenv": "^16.0.0"
   }
 }
